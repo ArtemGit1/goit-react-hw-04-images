@@ -1,13 +1,14 @@
 import React from 'react';
 import 'components/styles.css';
 
-const Modal = ({ onClose, largeImageURL }) => (
+const Modal = ({ imageUrl, onClose }) => {
+  return (
     <div className="Overlay" onClick={onClose}>
       <div className="Modal">
-        <img src={largeImageURL} alt="" />
+        <img src={imageUrl} alt="" />
       </div>
     </div>
   );
-  
-  export default Modal;
-  
+};
+
+export default Modal;
