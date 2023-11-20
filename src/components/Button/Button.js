@@ -1,13 +1,11 @@
 import React from 'react';
-import 'components/styles.css';
 
-const Button = ({ onLoadMore }) => {
+const Button = ({ onClick }) => {
   return (
-    <button type="button" className="Button" onClick={onLoadMore}>
+    <button type="button" className="button" onClick={onClick}>
       Load more
     </button>
   );
 };
 
 export default Button;
-  

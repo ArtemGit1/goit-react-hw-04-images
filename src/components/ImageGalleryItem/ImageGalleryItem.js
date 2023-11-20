@@ -1,20 +1,10 @@
 import React from 'react';
+import 'components/styles.css';
 
-const ImageGalleryItem = ({ image, openModal }) => {
-  const { webformatURL, largeImageURL } = image;
-
-  const handleImageClick = () => {
-    openModal(largeImageURL);
-  };
-
+const ImageGalleryItem = ({ imageUrl, onImageClick }) => {
   return (
-    <li className="ImageGalleryItem">
-      <img
-        src={webformatURL}
-        alt=""
-        className="ImageGalleryItem-image"
-        onClick={handleImageClick}
-      />
+    <li className="ImageGalleryItem" onClick={() => onImageClick(imageUrl)}>
+      <img className="ImageGalleryItem-image" src={imageUrl} alt="" />
     </li>
   );
 };

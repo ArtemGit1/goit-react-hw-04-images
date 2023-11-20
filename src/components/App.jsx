@@ -1,67 +1,66 @@
-// App.jsx
+// components/App.jsx
 import React, { useState, useEffect } from 'react';
 import Searchbar from './Searchbar/Searchbar.js';
 import ImageGallery from './ImageGallery/ImageGallery.js';
 import Button from './Button/Button.js';
-import Loader from './Loader/Loader.js';
 import Modal from './Modal/Modal.js';
+import Spinner from './Loader/Loader.js';
 import { getImages } from './Services/Api.js';
-
-import 'components/styles.css';
+import './styles.css';
 
 const App = () => {
   const [query, setQuery] = useState('');
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showButton, setShowButton] = useState(false);
-  const [modalImageUrl, setModalImageUrl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
     if (!query) return;
+
+    const fetchImages = async () => {
+      setLoading(true);
+      try {
+        const newImages = await getImages(query, page);
+        setImages((prevImages) => [...prevImages, ...newImages]);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchImages();
-  }, [query]);
-
-  useEffect(() => {
-    setShowButton(images.length > 0);
-  }, [images]);
-
-  const fetchImages = async () => {
-    setLoading(true);
-    try {
-      const newImages = await getImages(query, page);
-      setImages((prevImages) => [...prevImages, ...newImages]);
-      setPage((prevPage) => prevPage + 1);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [query, page]);
 
   const handleSearch = (newQuery) => {
     setQuery(newQuery);
-    setPage(1);
     setImages([]);
+    setPage(1);
   };
 
   const handleLoadMore = () => {
-    fetchImages();
+    setPage((prevPage) => prevPage + 1);
   };
 
-  const openModal = (imageUrl) => {
-    setModalImageUrl(imageUrl);
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalOpen(true);
   };
 
-  const closeModal = () => {
-    setModalImageUrl(null);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedImage('');
   };
 
   return (
-    <div className="App">
+    <div>
       <Searchbar onSubmit={handleSearch} />
-      <ImageGallery images={images} openModal={openModal} />
-      {loading && <Loader />}
-      {showButton && !loading && <Button onLoadMore={handleLoadMore} />}
-      {modalImageUrl && <Modal imageUrl={modalImageUrl} onClose={closeModal} />}
+      <ImageGallery images={images} onImageClick={handleImageClick} />
+      {loading && <Spinner />}
+      {images.length > 0 && !loading && <Button onClick={handleLoadMore} />}
+      <Modal isOpen={modalOpen} onClose={handleCloseModal} imageURL={selectedImage} />
     </div>
   );
 };

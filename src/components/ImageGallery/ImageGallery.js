@@ -1,19 +1,12 @@
 import React from 'react';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem.js';
 import 'components/styles.css';
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 
-const ImageGallery = ({ images, openModal }) => {
+const ImageGallery = ({ images, onImageClick }) => {
   return (
     <ul className="ImageGallery">
       {images.map((image) => (
-        <li key={image.id} className="ImageGalleryItem">
-          <img
-            src={image.webformatURL}
-            alt=""
-            className="ImageGalleryItem-image"
-            onClick={() => openModal(image.largeImageURL)}
-          />
-        </li>
+        <ImageGalleryItem key={image.id} imageUrl={image.webformatURL} onImageClick={onImageClick} />
       ))}
     </ul>
   );
